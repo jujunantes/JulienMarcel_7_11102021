@@ -1,0 +1,130 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Lato&display=swap");
+.h1-lpp {
+  color: #d04f4f;
+  font-size: 2.75rem;
+  font-family: DM Sans;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 36px;
+  line-height: 47px;
+}
+
+.has-search {
+  display: flex;
+  flex-direction: row;
+}
+
+.has-search .form-control {
+  border: none;
+  margin-right: -2rem;
+  background-color: #e7e7e7;
+  height: 5rem;
+  font-family: Lato;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 18px;
+  line-height: 22px;
+}
+
+.has-search .form-control-feedback {
+  position: relative;
+  right: 1rem;
+  top: 1.5rem;
+  display: block;
+  width: 32px;
+  height: 32px;
+  line-height: 2.375rem;
+  text-align: center;
+  pointer-events: none;
+  color: #aaa;
+}
+
+.card {
+  border-radius: 5px;
+  height: 364px;
+  border: none;
+  background-color: #e7e7e7;
+  overflow: hidden;
+  width: 100%;
+}
+
+.card-text {
+  overflow-y: hidden;
+  text-decoration: none;
+  text-overflow: ellipsis;
+}
+
+.photoRecette {
+  width: 100%;
+  height: 50%;
+  background-color: #c7bebe;
+  border-radius: 5px 5px 0px 0px;
+}
+
+.card-body {
+  height: 50%;
+}
+
+.ligneTitre {
+  margin-bottom: 1rem;
+}
+
+.titreRecette {
+  font-family: "Lato", sans-serif;
+  font-size: 18px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 21.6px;
+}
+
+.blocIngredients {
+  line-height: 14px;
+  height: 105px;
+}
+
+.pIngredient {
+  margin-block-start: 0em;
+  margin-block-end: 0em;
+}
+
+.listeIngredientsGras {
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  font-style: normal;
+  line-height: 14.4px;
+}
+
+.listeIngredientsNormal {
+  font-family: "Lato", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  font-style: normal;
+  line-height: 14.4px;
+}
+
+.descriptionRecette {
+  font-family: "Roboto", sans-serif;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 12px;
+  line-height: 100%;
+  height: 109px;
+}
+
+.tempsRecette {
+  font-family: Lato;
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 22px;
+  margin-left: 1rem;
+}
+
+.blocTemps {
+  display: flex;
+  flex-direction: row;
+}
+
+/*# sourceMappingURL=style.css.map */
