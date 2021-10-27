@@ -105,7 +105,7 @@
     overflow: hidden;
     text-align: justify;
     text-decoration: none;
-    text-overflow: ellipsis;
+    //text-overflow: ellipsis;
 
     text-align: justify;
     display: -webkit-box;
@@ -169,6 +169,8 @@
     max-width:70%;
     min-width:250px;
     padding:20px 2px;
+    background-color: chartreuse;
+    //z-index: 100;
     }
     
     .monDropdown--input_deplie_titre {
@@ -204,13 +206,15 @@
     list-style-type:none;
     margin-left:20px;
     padding-left:0;
-    z-index:999;
+    //z-index:100;
+    //background-color: chartreuse;
     }
     
     .monDropdown--input_deplie_list li {
     cursor:pointer;
     overflow:hidden;
-    text-overflow: '...';
+    //text-overflow: '...';
+    //background-color: chartreuse;
     white-space:nowrap;
     width:170px;
     }
@@ -231,7 +235,7 @@
     white-space:unset;
     }
     
-    .monDropdown--input_deplie_list_ing {
+    .monDropdown--input_deplie_list_ingredients {
     width:100%;
     }
     
