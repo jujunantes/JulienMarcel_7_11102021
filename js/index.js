@@ -1,11 +1,11 @@
 import { Recette } from './classes.js';
 
-const fetchRecettes = [];
-const mesRecettes = [];
-
-let IngredientsJSON = [];
-let AppareilsJSON = [];
-let UstensilesJSON = [];
+let IngredientsJSON = []
+let AppareilsJSON = []
+let UstensilesJSON = []
+let Recettes = []
+let htmlRecettes = []
+let htmlToutesRecettes = ''
 
 const chargeRecettes = async () => {
   const affichageRecettes = document.getElementById('affichageRecettes')
@@ -14,21 +14,23 @@ const chargeRecettes = async () => {
     .then((donnees) => {
       for (const recette of donnees.recipes) {
         const maRecette = new Recette(recette.id, recette.name, recette.servings, recette.ingredients, recette.time, recette.description, recette.appliance, recette.ustensils);
+        Recettes.push(maRecette)
         // On en profite pour récupérer les ingrédients, appareils et ustensiles
         for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
         AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
-        for(const element of maRecette.ustensils){UstensilesJSON.push(element)}
-        // Et on élimine les doubles
-        IngredientsJSON = Array.from(new Set(IngredientsJSON))
-        AppareilsJSON = Array.from(new Set(AppareilsJSON))
-        UstensilesJSON = Array.from(new Set(UstensilesJSON))
-        // On trie les tableaux
-        IngredientsJSON.sort(function (a, b) {return a.localeCompare(b)}) // Pour tenir compte des caractères accentués
-        AppareilsJSON.sort(function (a, b) {return a.localeCompare(b)})
-        UstensilesJSON.sort(function (a, b) {return a.localeCompare(b)})
+        for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
         // On affiche la recette
         affichageRecettes.innerHTML += maRecette.genereCarteRecette()
+        htmlRecettes.push(maRecette.html)
       }
+       // On élimine les doubles
+       IngredientsJSON = Array.from(new Set(IngredientsJSON))
+       AppareilsJSON = Array.from(new Set(AppareilsJSON))
+       UstensilesJSON = Array.from(new Set(UstensilesJSON))
+       // On trie les tableaux
+       IngredientsJSON.sort(function (a, b) {return a.localeCompare(b)}) // Pour tenir compte des caractères accentués
+       AppareilsJSON.sort(function (a, b) {return a.localeCompare(b)})
+       UstensilesJSON.sort(function (a, b) {return a.localeCompare(b)})
     });
     /*console.log(IngredientsJSON)
     console.log(AppareilsJSON)
@@ -48,6 +50,8 @@ const chargeRecettes = async () => {
     UstensilesJSON.forEach((element) => {
       affichageUstensiles.innerHTML += `<li class="filtre filtreUstensile">${element}</li>`;
     })
+
+    htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes
 };
 
 // Gestion des liste déroulantes
@@ -82,3 +86,34 @@ document.addEventListener('click', (event) => {
 })
 
 chargeRecettes();
+
+// Recherche
+const maRecherche = document.getElementById('inputRecherche')
+
+function filtrerRecettes() {
+  let htmlInjecte = ''
+  for (const maRecette of Recettes) {
+    if (
+      (maRecette.description.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // dans la description ?
+      || (maRecette.name.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou le nom de la recette ?
+      || (maRecette.appliance.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou ses appareils ?
+      ) {
+      htmlInjecte = htmlInjecte + maRecette.html
+    } else { // recherche dans les ingredients si pas encore de succès pour cette recette
+      for (const monIngredient of maRecette.ingredients) {
+        if (monIngredient.ingredient.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {htmlInjecte = htmlInjecte + maRecette.html}
+      }
+      if (htmlInjecte === '') { // encore rien trouvé : on tente dans les ustensiles
+        for (const monUstensile of maRecette.ustensils) {
+          if (monUstensile.ustensil.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {htmlInjecte = htmlInjecte + maRecette.html}
+        }
+      }
+    }
+  }
+  document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+}
+
+maRecherche.addEventListener('keyup', (event) => {
+  if (maRecherche.value.length > 2) {filtrerRecettes()}
+  else document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
+})
