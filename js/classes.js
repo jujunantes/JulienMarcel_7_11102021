@@ -11,14 +11,21 @@ class Ingredient {
 
     constructor (ingredient, quantity, unit) {
         this.ingredient = ingredient || ''
-        this.quantity = quantity || 0
-        this.unit = unit || ''
+        this.quantity = quantity
+        this.unit = unit
+    }
+}
+
+class Ustensile {
+    constructor (ustensil) {
+        this.ustensil = ustensil
     }
 }
 
 class Recette {
     genereCarteRecette() {
-        return `
+        this.html = 
+        `
         <div class="mt-5 col-12 col-lg-4">
             <div class="card">
                 <div class="photoRecette"></div>
@@ -46,6 +53,7 @@ class Recette {
             </div>
         </div>
         `
+        return this.html
     }
 
     constructor (id, name, servings, ingredients, time, description, appliance, ustensils) {
@@ -56,8 +64,9 @@ class Recette {
         this.time = time || 0
         this.description = description || ''
         this.appliance = appliance || ''
-        this.ustensils = ustensils || ''
+        this.ustensils = ustensils.map(ustensils => new Ustensile(ustensils)) || null
+        this.html = ''
     }
 }
 
-export { Ingredient, Recette }
+export { Ingredient, Ustensile, Recette }

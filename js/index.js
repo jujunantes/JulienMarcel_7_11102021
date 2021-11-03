@@ -4,8 +4,54 @@ let IngredientsJSON = []
 let AppareilsJSON = []
 let UstensilesJSON = []
 let Recettes = []
+let RecettesFiltrees = []
 let htmlRecettes = []
 let htmlToutesRecettes = ''
+
+function genereListesCriteres(estCeTrie) {
+  if (estCeTrie) { // doit-on générer les listes depuis le tableau des recettes filtrées ?
+    for (const maRecette of RecettesFiltrees) {
+      for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
+      AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
+      for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
+    }
+  } else { // ... ou bien depuis celui des recttes non filtrées ?
+    for (const maRecette of Recettes) {
+      for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
+      AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
+      for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
+    }
+  }
+  
+
+  // On élimine les doubles
+  IngredientsJSON = Array.from(new Set(IngredientsJSON))
+  AppareilsJSON = Array.from(new Set(AppareilsJSON))
+  UstensilesJSON = Array.from(new Set(UstensilesJSON))
+  // On trie les tableaux
+  IngredientsJSON.sort(function (a, b) {return a.localeCompare(b)}) // Pour tenir compte des caractères accentués
+  AppareilsJSON.sort(function (a, b) {return a.localeCompare(b)})
+  UstensilesJSON.sort(function (a, b) {return a.localeCompare(b)})
+
+  // On peut maintenant peupler les listes déroulantes
+  const affichageIngredients = document.getElementById('listeIngredients')
+  affichageIngredients.innerHTML = ''
+  IngredientsJSON.forEach((element) => {
+    affichageIngredients.innerHTML += `<li class="filtre filtreIngredient">${element}</li>`;
+  })
+
+  const affichageAppareils = document.getElementById('listeAppareils')
+  affichageAppareils.innerHTML = ''
+  AppareilsJSON.forEach((element) => {
+    affichageAppareils.innerHTML += `<li class="filtre filtreAppareil">${element}</li>`;
+  })
+
+  const affichageUstensiles = document.getElementById('listeUstensiles')
+  affichageUstensiles.innerHTML = ''
+  UstensilesJSON.forEach((element) => {
+    affichageUstensiles.innerHTML += `<li class="filtre filtreUstensile">${element}</li>`;
+  })
+}
 
 const chargeRecettes = async () => {
   const affichageRecettes = document.getElementById('affichageRecettes')
@@ -15,42 +61,12 @@ const chargeRecettes = async () => {
       for (const recette of donnees.recipes) {
         const maRecette = new Recette(recette.id, recette.name, recette.servings, recette.ingredients, recette.time, recette.description, recette.appliance, recette.ustensils);
         Recettes.push(maRecette)
-        // On en profite pour récupérer les ingrédients, appareils et ustensiles
-        for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
-        AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
-        for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
         // On affiche la recette
         affichageRecettes.innerHTML += maRecette.genereCarteRecette()
         htmlRecettes.push(maRecette.html)
       }
-       // On élimine les doubles
-       IngredientsJSON = Array.from(new Set(IngredientsJSON))
-       AppareilsJSON = Array.from(new Set(AppareilsJSON))
-       UstensilesJSON = Array.from(new Set(UstensilesJSON))
-       // On trie les tableaux
-       IngredientsJSON.sort(function (a, b) {return a.localeCompare(b)}) // Pour tenir compte des caractères accentués
-       AppareilsJSON.sort(function (a, b) {return a.localeCompare(b)})
-       UstensilesJSON.sort(function (a, b) {return a.localeCompare(b)})
     });
-    /*console.log(IngredientsJSON)
-    console.log(AppareilsJSON)
-    console.log(UstensilesJSON)*/
-    // On peut maintenant peupler les listes déroulantes
-    const affichageIngredients = document.getElementById('listeIngredients')
-    IngredientsJSON.forEach((element) => {
-      affichageIngredients.innerHTML += `<li class="filtre filtreIngredient">${element}</li>`;
-    })
-
-    const affichageAppareils = document.getElementById('listeAppareils')
-    AppareilsJSON.forEach((element) => {
-      affichageAppareils.innerHTML += `<li class="filtre filtreAppareil">${element}</li>`;
-    })
-
-    const affichageUstensiles = document.getElementById('listeUstensiles')
-    UstensilesJSON.forEach((element) => {
-      affichageUstensiles.innerHTML += `<li class="filtre filtreUstensile">${element}</li>`;
-    })
-
+    genereListesCriteres(false)
     htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes
 };
 
@@ -91,29 +107,51 @@ chargeRecettes();
 const maRecherche = document.getElementById('inputRecherche')
 
 function filtrerRecettes() {
-  let htmlInjecte = ''
+  RecettesFiltrees.length = 0 // Nous utilisons un tableau, plutôt que de générer immédiatement le html, car nous devrons aussi mettre à jour les ingrédients / appareils / ustensiles
+  IngredientsJSON.length = 0
+  AppareilsJSON.length = 0
+  UstensilesJSON.length = 0
   for (const maRecette of Recettes) {
+    let recetteTrouvee = false
     if (
       (maRecette.description.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // dans la description ?
       || (maRecette.name.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou le nom de la recette ?
       || (maRecette.appliance.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou ses appareils ?
       ) {
-      htmlInjecte = htmlInjecte + maRecette.html
+        RecettesFiltrees.push(maRecette)
+        recetteTrouvee = true
     } else { // recherche dans les ingredients si pas encore de succès pour cette recette
       for (const monIngredient of maRecette.ingredients) {
-        if (monIngredient.ingredient.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {htmlInjecte = htmlInjecte + maRecette.html}
+        if (monIngredient.ingredient.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {
+          RecettesFiltrees.push(maRecette)
+          recetteTrouvee = true
+        }
       }
-      if (htmlInjecte === '') { // encore rien trouvé : on tente dans les ustensiles
+      if (recetteTrouvee === false) { // encore rien trouvé : on tente dans les ustensiles
         for (const monUstensile of maRecette.ustensils) {
-          if (monUstensile.ustensil.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {htmlInjecte = htmlInjecte + maRecette.html}
+          if (monUstensile.ustensil.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {
+            RecettesFiltrees.push(maRecette)
+            recetteTrouvee = true
+          }
         }
       }
     }
+    if (recetteTrouvee) { // On peut mettre à jour les ingrédients, appareils et ustensiles
+      for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
+      AppareilsJSON.push(maRecette.appliance)
+      for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
+      genereListesCriteres(true)
+    }
   }
+  let htmlInjecte = ''
+  for (const maRecetteFiltree of RecettesFiltrees) {htmlInjecte += maRecetteFiltree.html}
   document.getElementById('affichageRecettes').innerHTML = htmlInjecte
 }
 
 maRecherche.addEventListener('keyup', (event) => {
   if (maRecherche.value.length > 2) {filtrerRecettes()}
-  else document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
+  else {
+    document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
+    genereListesCriteres(false)
+  }
 })
