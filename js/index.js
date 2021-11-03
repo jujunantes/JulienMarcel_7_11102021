@@ -8,6 +8,13 @@ let RecettesFiltrees = []
 let htmlRecettes = []
 let htmlToutesRecettes = ''
 
+function afficheRecettes(estCeTrie) {
+  let htmlInjecte = ''
+  if (estCeTrie) {for (const maRecetteFiltree of RecettesFiltrees) {htmlInjecte += maRecetteFiltree.html}}
+  else {for (const maRecette of Recettes) {htmlInjecte += maRecette.html}}
+  document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+}
+
 function genereListesCriteres(estCeTrie) {
   if (estCeTrie) { // doit-on générer les listes depuis le tableau des recettes filtrées ?
     for (const maRecette of RecettesFiltrees) {
@@ -60,12 +67,16 @@ const chargeRecettes = async () => {
     .then((donnees) => {
       for (const recette of donnees.recipes) {
         const maRecette = new Recette(recette.id, recette.name, recette.servings, recette.ingredients, recette.time, recette.description, recette.appliance, recette.ustensils);
+        maRecette.genereCarteRecette()
         Recettes.push(maRecette)
-        // On affiche la recette
+        /*
         affichageRecettes.innerHTML += maRecette.genereCarteRecette()
         htmlRecettes.push(maRecette.html)
+        */
       }
     });
+    Recettes.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
+    afficheRecettes(false)
     genereListesCriteres(false)
     htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes
 };
@@ -143,9 +154,9 @@ function filtrerRecettes() {
       genereListesCriteres(true)
     }
   }
-  let htmlInjecte = ''
-  for (const maRecetteFiltree of RecettesFiltrees) {htmlInjecte += maRecetteFiltree.html}
-  document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+  // On affiche les recettes
+  RecettesFiltrees.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
+  afficheRecettes(true)
 }
 
 maRecherche.addEventListener('keyup', (event) => {
