@@ -131,6 +131,16 @@
   flex-wrap: wrap;
 }
 
+.listeDropdown {
+  position: relative;
+  margin-right: 1rem;
+  margin-bottom: 0.5rem;
+  padding: 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  border: 0;
+}
+
 .listeDropdown summary {
   align-items: center;
   display: flex;
@@ -138,16 +148,23 @@
   justify-content: space-between;
   line-height: 2.4rem;
   width: 8.1rem;
+  font-weight: 500;
+  text-align: center;
 }
 
 .listeDropdown summary svg {
   line-height: 2.4rem;
   transition: 400ms ease-in-out;
   width: 1rem;
+  position: absolute;
+  right: 1rem;
 }
 
 .listeDropdown[open] > summary {
   width: 35rem;
+}
+.listeDropdown[open] > summary svg {
+  z-index: 2;
 }
 
 .listeDropdown[open] > summary svg {
@@ -158,8 +175,12 @@
 .listeDropdown-input {
   border-radius: 5px 5px 0 0;
   left: 0;
+  position: absolute;
   width: 35rem;
   z-index: 1;
+  position: absolute;
+  top: 0rem;
+  padding: 1rem;
 }
 
 .listeDropdown-input::placeholder {
@@ -170,8 +191,15 @@
 
 .listeDropdown ul {
   border-radius: 0 0 5px 5px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(200px, 1fr));
   font-weight: 400;
+  left: 0;
   max-height: 352px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 1.25rem;
+  position: absolute;
   width: 592px;
   z-index: 1;
 }
@@ -258,13 +286,26 @@ button {
   .form-control-feedback {
     visibility: hidden;
   }
-}
-@media all and (max-width: 688px) {
-  .listeDropdown-input,
-.listeDropdown,
+
+  .listeDropdown,
+.listeDropdown[open] > summary,
+.listeDropdown-input,
 .listeDropdown ul {
-    width: 400px;
+    width: 99.99%;
+    margin-right: 0;
+    grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
 }
+/*
+@media all and (max-width: 688px) {
+    .listeDropdown-input,
+    .listeDropdown,
+    .listeDropdown ul
+    {
+	    width: 100vh;
+		margin-right: 0;
+    }
+}
+*/
 
 /*# sourceMappingURL=style.css.map */
