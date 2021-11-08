@@ -303,16 +303,7 @@ button
 		grid-template-columns: repeat(2, minmax(200px, 1fr));
     }
 
-	//.row {margin-right: 0;}
+	details summary::-webkit-details-marker {
+		display:none;
+	}
 }
-/*
-@media all and (max-width: 688px) {
-    .listeDropdown-input,
-    .listeDropdown,
-    .listeDropdown ul
-    {
-	    width: 100vh;
-		margin-right: 0;
-    }
-}
-*/

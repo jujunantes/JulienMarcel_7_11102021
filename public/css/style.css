@@ -295,17 +295,10 @@ button {
     margin-right: 0;
     grid-template-columns: repeat(2, minmax(200px, 1fr));
   }
+
+  details summary::-webkit-details-marker {
+    display: none;
+  }
 }
-/*
-@media all and (max-width: 688px) {
-    .listeDropdown-input,
-    .listeDropdown,
-    .listeDropdown ul
-    {
-	    width: 100vh;
-		margin-right: 0;
-    }
-}
-*/
 
 /*# sourceMappingURL=style.css.map */
