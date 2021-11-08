@@ -99,17 +99,17 @@
 }
 
 .descriptionRecette {
-  display: -webkit-box;
   font-family: "Roboto", sans-serif;
-  font-size: 12px;
   font-style: normal;
   font-weight: normal;
+  font-size: 12px;
   line-height: 100%;
   overflow: hidden;
-  text-align: justify;
   text-decoration: none;
-  webkit-box-orient: vertical;
-  webkit-line-clamp: 8;
+  text-align: justify;
+  display: -webkit-box;
+  -webkit-line-clamp: 8;
+  -webkit-box-orient: vertical;
 }
 
 .tempsRecette {

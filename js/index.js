@@ -125,22 +125,22 @@ function filtrerRecettes() {
   for (const maRecette of Recettes) {
     let recetteTrouvee = false
     if (
-      (maRecette.description.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // dans la description ?
-      || (maRecette.name.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou le nom de la recette ?
-      || (maRecette.appliance.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) // ou ses appareils ?
+      (maRecette.description.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // dans la description ?
+      || (maRecette.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou le nom de la recette ?
+      || (maRecette.appliance.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou ses appareils ?
       ) {
         RecettesFiltrees.push(maRecette)
         recetteTrouvee = true
     } else { // recherche dans les ingredients si pas encore de succès pour cette recette
       for (const monIngredient of maRecette.ingredients) {
-        if (monIngredient.ingredient.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {
+        if (monIngredient.ingredient.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) {
           RecettesFiltrees.push(maRecette)
           recetteTrouvee = true
         }
       }
       if (recetteTrouvee === false) { // encore rien trouvé : on tente dans les ustensiles
         for (const monUstensile of maRecette.ustensils) {
-          if (monUstensile.ustensil.toLowerCase().indexOf(maRecherche.value.toLowerCase()) !== -1) {
+          if (monUstensile.ustensil.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) {
             RecettesFiltrees.push(maRecette)
             recetteTrouvee = true
           }

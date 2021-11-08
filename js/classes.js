@@ -10,9 +10,9 @@ class Ingredient {
     }
 
     constructor (ingredient, quantity, unit) {
-        this.ingredient = ingredient || ''
-        this.quantity = quantity
-        this.unit = unit
+        this.ingredient = null ?? ingredient
+        this.quantity = null ?? quantity
+        this.unit = null ?? unit
     }
 }
 
@@ -57,14 +57,14 @@ class Recette {
     }
 
     constructor (id, name, servings, ingredients, time, description, appliance, ustensils) {
-        this.id = id || 0
-        this.name = name || ''
-        this.servings = servings || ''
-        this.ingredients = ingredients.map(ingredient => new Ingredient(ingredient.ingredient, ingredient.quantity, ingredient.unit)) || null
-        this.time = time || 0
-        this.description = description || ''
-        this.appliance = appliance || ''
-        this.ustensils = ustensils.map(ustensils => new Ustensile(ustensils)) || null
+        this.id = null ?? id
+        this.name = null ?? name
+        this.servings = null ?? servings
+        this.ingredients = null ?? ingredients.map(ingredient => new Ingredient(ingredient.ingredient, ingredient.quantity, ingredient.unit))
+        this.time = null ?? time
+        this.description = null ?? description
+        this.appliance = null ?? appliance
+        this.ustensils = null ?? ustensils.map(ustensils => new Ustensile(ustensils))
         this.html = ''
     }
 }

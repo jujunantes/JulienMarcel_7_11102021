@@ -100,17 +100,17 @@
 }
 .descriptionRecette
 {
-	display: -webkit-box;
 	font-family: "Roboto", sans-serif;
-	font-size: 12px;
-	font-style: normal;
-	font-weight: normal;
-	line-height: 100%;
-	overflow: hidden;
-	text-align: justify;
-	text-decoration: none;
-	webkit-box-orient: vertical;
-	webkit-line-clamp: 8;
+  	font-style: normal;
+  	font-weight: normal;
+  	font-size: 12px;
+  	line-height: 100%;
+  	overflow: hidden;
+  	text-decoration: none;
+  	text-align: justify;
+  	display: -webkit-box;
+  	-webkit-line-clamp: 8;
+  	-webkit-box-orient: vertical;
 }
 .tempsRecette
 {
@@ -210,6 +210,7 @@
 	list-style-type: none;
 	padding-right: 1.8rem;
 }
+
 .listeDropdown ul li:hover
 {
 	overflow: unset;
