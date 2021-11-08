@@ -302,6 +302,8 @@ button
 		margin-right: 0;
 		grid-template-columns: repeat(2, minmax(200px, 1fr));
     }
+
+	//.row {margin-right: 0;}
 }
 /*
 @media all and (max-width: 688px) {
