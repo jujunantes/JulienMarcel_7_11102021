@@ -5,8 +5,10 @@ let AppareilsJSON = []
 let UstensilesJSON = []
 let Recettes = []
 let RecettesFiltrees = []
-let htmlRecettes = []
 let htmlToutesRecettes = ''
+let htmlTousIngredients = ''
+let htmlTousAppareils = ''
+let htmlTousUstensiles = ''
 
 function afficheRecettes(estCeTrie) {
   let htmlInjecte = ''
@@ -69,17 +71,16 @@ const chargeRecettes = async () => {
         const maRecette = new Recette(recette.id, recette.name, recette.servings, recette.ingredients, recette.time, recette.description, recette.appliance, recette.ustensils);
         maRecette.genereCarteRecette()
         Recettes.push(maRecette)
-        /*
-        affichageRecettes.innerHTML += maRecette.genereCarteRecette()
-        htmlRecettes.push(maRecette.html)
-        */
       }
     });
     Recettes.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
     afficheRecettes(false)
     genereListesCriteres(false)
-    htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes
-};
+    htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes, et des menus dropdown
+    htmlTousIngredients = document.getElementById('listeIngredients').innerHTML
+    htmlTousAppareils = document.getElementById('listeAppareils').innerHTML
+    htmlTousUstensiles = document.getElementById('listeUstensiles').innerHTML
+}
 
 // Gestion des liste déroulantes
 
@@ -114,7 +115,7 @@ document.addEventListener('click', (event) => {
 
 chargeRecettes();
 
-// Recherche
+// Recherche générale
 const maRecherche = document.getElementById('inputRecherche')
 
 function filtrerRecettes() {
@@ -165,4 +166,34 @@ maRecherche.addEventListener('keyup', (event) => {
     document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
     genereListesCriteres(false)
   }
+})
+
+// Recherche menus DropDown
+const maRechercheIngredients = document.getElementById('rechercheIngredients')
+const maRechercheAppareils = document.getElementById('rechercheAppareils')
+const maRechercheUstensiles = document.getElementById('rechercheUstensiles')
+
+function filtrerDropdown(critereEntre, affichageMenu) {
+  const monCritereEntre = critereEntre.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  const monAffichageMenu = document.getElementById(affichageMenu)
+  const mesLi = monAffichageMenu.getElementsByTagName('li')
+  let htmlInsere = ''
+  for (const monLi of mesLi) {
+    console.log(monLi)
+    if (monLi.textContent.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(monCritereEntre) !== -1) { htmlInsere += monLi.outerHTML }
+  }
+  monAffichageMenu.innerHTML = htmlInsere
+}
+
+maRechercheIngredients.addEventListener('keyup', (event) => {
+  if (maRechercheIngredients.value.length > 2) {filtrerDropdown(maRechercheIngredients, 'listeIngredients')}
+  else { document.getElementById('listeIngredients').innerHTML = htmlTousIngredients }
+})
+maRechercheAppareils.addEventListener('keyup', (event) => {
+  if (maRechercheAppareils.value.length > 2) {filtrerDropdown(maRechercheAppareils, 'listeAppareils')}
+  else { document.getElementById('listeAppareils').innerHTML = htmlTousAppareils }
+})
+maRechercheUstensiles.addEventListener('keyup', (event) => {
+  if (maRechercheUstensiles.value.length > 2) {filtrerDropdown(maRechercheUstensiles, 'listeUstensiles')}
+  else { document.getElementById('listeUstensiles').innerHTML = htmlTousUstensiles }
 })
