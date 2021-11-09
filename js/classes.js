@@ -26,8 +26,8 @@ class Recette {
     genereCarteRecette() {
         this.html = 
         `
-        <div class="mt-5 col-12 col-lg-4">
-            <div class="card">
+        <div class="mt-5 col-12 col-lg-4 divRecette">
+            <div class="card carteRecette">
                 <div class="photoRecette"></div>
                 <div class="card-body">
                     <div class="row ligneTitre">

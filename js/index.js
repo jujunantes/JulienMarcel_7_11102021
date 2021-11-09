@@ -14,7 +14,15 @@ function afficheRecettes(estCeTrie) {
   let htmlInjecte = ''
   if (estCeTrie) {for (const maRecetteFiltree of RecettesFiltrees) {htmlInjecte += maRecetteFiltree.html}}
   else {for (const maRecette of Recettes) {htmlInjecte += maRecette.html}}
-  document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+  if (htmlInjecte !== '') {
+    document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+  } else {
+    document.getElementById('affichageRecettes').innerHTML = `
+      <div class="alert alert-primary" role="alert">
+        Aucune recette ne correspond à ces critères !
+      </div>
+    `
+  }
 }
 
 function genereListesCriteres(estCeTrie) {
@@ -102,6 +110,72 @@ function ajouteFiltre(event) {
           </button>
       </span>
   `
+  // Maintenant, filtrons les recettes à partir de ce qui a été ajouté
+  const critereAjoute = event.target.innerHTML.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+  let htmlInjecte = ''
+  const mesRecettes = document.getElementsByClassName('divRecette')
+  IngredientsJSON.length = 0
+  AppareilsJSON.length = 0
+  UstensilesJSON.length = 0
+  for (const maRecette of mesRecettes) {
+    // Nous allons retrouver la recette par son nom
+    const nomRecette = maRecette.getElementsByTagName('h5')[0].innerHTML
+    switch (event.target.className.split(' ').pop()) {
+    case 'filtreIngredient' :
+      for (const recetteConsideree of Recettes) {
+        if (recetteConsideree.name === nomRecette){
+          // Recette trouvée. Contient-elle cet ingrédient ?
+          for (const monIngredient of recetteConsideree.ingredients) {
+            if (monIngredient.ingredient.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(critereAjoute) !== -1) {
+              htmlInjecte += recetteConsideree.html
+              for(const list of recetteConsideree.ingredients){IngredientsJSON.push(list.ingredient)}
+              AppareilsJSON.push(recetteConsideree.appliance)
+              for(const list of recetteConsideree.ustensils){UstensilesJSON.push(list.ustensil)}
+            }
+          }
+        } 
+      }
+      break
+    case 'filtreAppareil' :
+      for (const recetteConsideree of Recettes) {
+        if (recetteConsideree.name === nomRecette){
+          // Recette trouvée. Contient-elle cet Appareil ?
+          if (recetteConsideree.appliance.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(critereAjoute) !== -1) {
+            htmlInjecte += recetteConsideree.html
+            for(const list of recetteConsideree.ingredients){IngredientsJSON.push(list.ingredient)}
+            AppareilsJSON.push(recetteConsideree.appliance)
+            for(const list of recetteConsideree.ustensils){UstensilesJSON.push(list.ustensil)}
+          }
+        } 
+      }
+      break
+    case 'filtreUstensile' :
+      for (const recetteConsideree of Recettes) {
+        if (recetteConsideree.name === nomRecette){
+          // Recette trouvée. Contient-elle cet ingrédient ?
+          for (const monUstensile of recetteConsideree.ustensils) {
+            if (monUstensile.ustensil.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(critereAjoute) !== -1) {
+              htmlInjecte += recetteConsideree.html
+              for(const list of recetteConsideree.ingredients){IngredientsJSON.push(list.ingredient)}
+              AppareilsJSON.push(recetteConsideree.appliance)
+              for(const list of recetteConsideree.ustensils){UstensilesJSON.push(list.ustensil)}
+            }
+          }
+        } 
+      }  
+    }
+  }
+  genereListesCriteres(true)
+  if (htmlInjecte !== '') {
+    document.getElementById('affichageRecettes').innerHTML = htmlInjecte
+  } else {
+    document.getElementById('affichageRecettes').innerHTML = `
+      <div class="alert alert-primary" role="alert">
+        Aucune recette ne correspond à ces critères !
+      </div>
+    `
+  }
+  
 }
 
 function retireCritere(event) {
