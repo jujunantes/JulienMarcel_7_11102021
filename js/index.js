@@ -50,7 +50,7 @@ function genereListesCriteres(estCeTrie) {
     }
   }
   // On élimline les ingrédients qui sont dans les filtres
-  const mesFiltres = document.getElementsByClassName('critere')
+  const mesFiltres = document.querySelectorAll('.critere')
   let index = null
   for (const monFiltre of mesFiltres) {
     const monCritere = monFiltre.innerHTML.substring(0, monFiltre.innerHTML.indexOf('<button>')).replace(/(\r\n|\n|\r)/gm, '').replace(/^\s+/g, '').replace(/\s+$/g, '')
@@ -66,9 +66,9 @@ function genereListesCriteres(estCeTrie) {
     }
   }
   // On élimine les doubles
-  IngredientsJSON = Array.from(new Set(IngredientsJSON))
-  AppareilsJSON = Array.from(new Set(AppareilsJSON))
-  UstensilesJSON = Array.from(new Set(UstensilesJSON))
+  IngredientsJSON = [...new Set(IngredientsJSON)]
+  AppareilsJSON = [...new Set(AppareilsJSON)]
+  UstensilesJSON = [...new Set(UstensilesJSON)]
   // On trie les tableaux
   IngredientsJSON.sort(function (a, b) {return a.localeCompare(b)}) // Pour tenir compte des caractères accentués
   AppareilsJSON.sort(function (a, b) {return a.localeCompare(b)})
@@ -129,17 +129,15 @@ function trieAvecFiltres(htmlRecettes) {
   IngredientsJSON.length = 0
   AppareilsJSON.length = 0
   UstensilesJSON.length = 0
-  let recettesAvecFiltres = []
-  let mesRecettes = new DOMParser().parseFromString(htmlRecettes, 'text/html').getElementsByClassName('divRecette')
-  const mesFiltres = document.getElementsByClassName('critere')
+  let mesRecettes = new DOMParser().parseFromString(htmlRecettes, 'text/html').querySelectorAll('.divRecette')
+  const mesFiltres = document.querySelectorAll('.critere')
   let htmlInjecte = ''
   RecettesFiltrees.length = 0
   for (const monFiltre of mesFiltres) {
     const monCritere = monFiltre.innerHTML.substring(0, monFiltre.innerHTML.indexOf('<button>')).replace(/(\r\n|\n|\r)/gm, '').replace(/^\s+/g, '').replace(/\s+$/g, '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    if (htmlInjecte !== '') { mesRecettes = new DOMParser().parseFromString(htmlInjecte, 'text/html').getElementsByClassName('divRecette')}
+    if (htmlInjecte !== '') { mesRecettes = new DOMParser().parseFromString(htmlInjecte, 'text/html').querySelectorAll('.divRecette')}
     htmlInjecte = ''
     for (const maRecette of mesRecettes) {
-      if (maRecette.dejaTrouvee === true) {continue} // On a déjà ajouté cette recette
       // Nous allons retrouver la recette par son nom
       const nomRecette = maRecette.getElementsByTagName('h5')[0].innerHTML
       let recetteTrouvee = false
@@ -201,7 +199,7 @@ function trieAvecFiltres(htmlRecettes) {
   return htmlInjecte
 }
 
-function ajouteFiltre(event) {
+function ajouteCritere(event) {
   document.getElementById('criteres').innerHTML += `
       <span class="critere critere-${event.target.className.split(' ').pop()}">
         ${event.target.innerHTML}<button>
@@ -225,13 +223,14 @@ function ajouteFiltre(event) {
 }
 
 function retireCritere(event) {
+  //event.target.parentNode.parentNode.parentNode.remove()
   event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode);
-  trieAvecFiltres(htmlToutesRecettes)
+  //trieAvecFiltres(htmlToutesRecettes)
 }
 
 document.addEventListener('click', (event) => {
   if (event.target.classList.contains('retireCritere')) { retireCritere(event) }
-  if (event.target.classList.contains('filtre')) {ajouteFiltre(event)}
+  if (event.target.classList.contains('filtre')) {ajouteCritere(event)}
 })
 
 chargeRecettes();
@@ -247,6 +246,12 @@ function filtrerRecettes() {
   for (const maRecette of Recettes) {
     let recetteTrouvee = false
     if (
+      /*
+      comparer(maRecette.description, maRecherche.value)
+      maChaine = normaliser(maRecette.description)
+      maChaineARechercher = maRecherche.value()
+      (maChaine.indexOf(maChaineARechercher)
+      */
       (maRecette.description.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // dans la description ?
       || (maRecette.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou le nom de la recette ?
       || (maRecette.appliance.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou ses appareils ?
@@ -280,6 +285,7 @@ function filtrerRecettes() {
   RecettesFiltrees.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
   afficheRecettes(true)
 }
+
 function restaureRecettes() {
   const conteneurCriteres = document.getElementById('criteres')
   if (conteneurCriteres.innerHTML === '') { // Il n'y a pas de critères actifs
