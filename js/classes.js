@@ -24,11 +24,13 @@ class Ustensile {
 
 class Recette {
     genereCarteRecette() {
+        let nomImage = this.name.replace("'", '&#39;')
+
         this.html = 
         `
         <div class="mt-5 col-12 col-lg-4 divRecette">
             <div class="card carteRecette">
-                <div class="photoRecette"></div>
+                <div class="photoRecette"><img src='images/illustrations/${nomImage}.jpg' alt='${this.name}'/></div>
                 <div class="card-body">
                     <div class="row ligneTitre">
                         <div class="col-8">
@@ -65,7 +67,7 @@ class Recette {
         this.description = null ?? description
         this.appliance = null ?? appliance
         this.ustensils = null ?? ustensils.map(ustensils => new Ustensile(ustensils))
-        this.html = ''
+        this.html = null
     }
 }
 

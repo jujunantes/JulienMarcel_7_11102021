@@ -55,6 +55,12 @@
 	border-radius: 5px 5px 0px 0px;
 	height: 50%;
 	width: 100%;
+	img {
+		display: block;
+		object-fit: cover;
+		width: 100%;
+		height: 100%;
+	}
 }
 .card-body
 {
@@ -283,6 +289,14 @@ button
 .critere-filtreAppareil
 {
 	background-color: #68D9A4;
+}
+
+.retireCritere {
+	transition: 400ms ease-in-out;
+	transform: rotate(-90deg);
+}
+.retireCritere:hover {
+	transform: scale(1.1) rotate(90deg);	
 }
 
 // Ajouts réactifs
