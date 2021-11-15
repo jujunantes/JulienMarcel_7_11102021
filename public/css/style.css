@@ -40,13 +40,72 @@
   width: 32px;
 }
 
+#spanLoupe:hover,
+svg:hover {
+  transform: scale(1.5);
+  animation: shake 0.5s;
+  transition: 200ms;
+  animation-iteration-count: infinite;
+  color: chartreuse;
+  z-index: 2;
+}
+
+@keyframes shake {
+  0% {
+    transform: translate(1px, 1px) rotate(0deg);
+  }
+  10% {
+    transform: translate(-1px, -2px) rotate(-1deg);
+  }
+  20% {
+    transform: translate(-3px, 0px) rotate(1deg);
+  }
+  30% {
+    transform: translate(3px, 2px) rotate(0deg);
+  }
+  40% {
+    transform: translate(1px, -1px) rotate(1deg);
+  }
+  50% {
+    transform: translate(-1px, 2px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(-3px, 1px) rotate(0deg);
+  }
+  70% {
+    transform: translate(3px, 1px) rotate(-1deg);
+  }
+  80% {
+    transform: translate(-1px, -1px) rotate(1deg);
+  }
+  90% {
+    transform: translate(1px, 2px) rotate(0deg);
+  }
+  100% {
+    transform: translate(1px, -2px) rotate(-1deg);
+  }
+}
+details:hover {
+  transform: scale(1.05);
+  transition: 200ms;
+  z-index: 2;
+}
+
 .card {
   background-color: #e7e7e7;
   border: none;
   border-radius: 5px;
+  cursor: pointer;
   height: 364px;
   overflow: hidden;
   width: 100%;
+}
+
+.card:hover,
+.card:focus {
+  transform: scale(1.05);
+  transition: 300ms;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
 }
 
 .photoRecette {
@@ -130,6 +189,9 @@
 .blocTemps {
   display: flex;
   flex-direction: row;
+  justify-content: space-between;
+  position: relative;
+  right: 0rem;
 }
 
 #barreListes {
@@ -264,6 +326,12 @@
   margin: 0 0.6rem 0.5rem 0;
   padding: 0.6rem 0.8rem;
   position: relative;
+}
+
+.critere:hover {
+  transform: scale(1.05);
+  transition: 200ms;
+  z-index: 2;
 }
 
 button {

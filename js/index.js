@@ -224,8 +224,13 @@ function ajouteCritere(event) {
 
 function retireCritere(event) {
   //event.target.parentNode.parentNode.parentNode.remove()
-  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode);
-  //trieAvecFiltres(htmlToutesRecettes)
+  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode)
+  let htmlAInjecter = trieAvecFiltres(htmlToutesRecettes)
+  if (htmlAInjecter !== '') {
+    document.getElementById('affichageRecettes').innerHTML = htmlAInjecter
+  } else {
+    filtrerRecettes()
+  }
 }
 
 document.addEventListener('click', (event) => {
@@ -238,6 +243,10 @@ chargeRecettes();
 // Recherche générale
 const maRecherche = document.getElementById('inputRecherche')
 
+function chaineContientChaine(chaine1, chaine2){
+  if (chaine1.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(chaine2.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) {return true} else {return false}
+}
+
 function filtrerRecettes() {
   RecettesFiltrees.length = 0 // Nous utilisons un tableau, plutôt que de générer immédiatement le html, car nous devrons aussi mettre à jour les ingrédients / appareils / ustensiles
   IngredientsJSON.length = 0
@@ -245,29 +254,21 @@ function filtrerRecettes() {
   UstensilesJSON.length = 0
   for (const maRecette of Recettes) {
     let recetteTrouvee = false
-    if (
-      /*
-      comparer(maRecette.description, maRecherche.value)
-      maChaine = normaliser(maRecette.description)
-      maChaineARechercher = maRecherche.value()
-      (maChaine.indexOf(maChaineARechercher)
-      */
-      (maRecette.description.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // dans la description ?
-      || (maRecette.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou le nom de la recette ?
-      || (maRecette.appliance.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) // ou ses appareils ?
-      ) {
+    if (chaineContientChaine(maRecette.description, maRecherche.value) // dans la description ?
+      || chaineContientChaine(maRecette.name, maRecherche.value) // ou le nom de la recette ?
+      || chaineContientChaine(maRecette.appliance, maRecherche.value)) {// ou ses appareils ?
         RecettesFiltrees.push(maRecette)
         recetteTrouvee = true
     } else { // recherche dans les ingredients si pas encore de succès pour cette recette
       for (const monIngredient of maRecette.ingredients) {
-        if (monIngredient.ingredient.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) {
+        if (chaineContientChaine(monIngredient.ingredient, maRecherche.value)) {
           RecettesFiltrees.push(maRecette)
           recetteTrouvee = true
         }
       }
       if (recetteTrouvee === false) { // encore rien trouvé : on tente dans les ustensiles
         for (const monUstensile of maRecette.ustensils) {
-          if (monUstensile.ustensil.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").indexOf(maRecherche.value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")) !== -1) {
+          if (chaineContientChaine(monUstensile.ustensil, maRecherche.value)) {
             RecettesFiltrees.push(maRecette)
             recetteTrouvee = true
           }
@@ -299,7 +300,7 @@ maRecherche.addEventListener('keyup', (event) => {
   if (maRecherche.value.length > 2) {filtrerRecettes()}
   else {
     restaureRecettes()
-   // genereListesCriteres(false)
+    genereListesCriteres(false)
   }
 })
 
