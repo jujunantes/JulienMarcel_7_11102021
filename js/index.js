@@ -25,18 +25,17 @@ function afficheRecettes(estCeTrie) {
   }
 }
 
-function retireEntreeTableau(arr, value) {
+function retireEntreeTableau(tableau, valeur) {
   var i = 0;
-  while (i < arr.length) {
-    if (arr[i] === value) {
-      arr.splice(i, 1);
-    } else {++i;}
+  while (i < tableau.length) {
+    if (tableau[i] === valeur) {tableau.splice(i, 1)}
+    else {++i;}
   }
-  return arr;
+  return tableau;
 }
 
-function genereListesCriteres(estCeTrie) {
-  if (estCeTrie) { // doit-on générer les listes depuis le tableau des recettes filtrées ?
+function genereListesCriteres() {
+  /*if (estCeTrie === true) { // doit-on générer les listes depuis le tableau des recettes filtrées ?
     for (const maRecette of RecettesFiltrees) {
       for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
       AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
@@ -47,6 +46,23 @@ function genereListesCriteres(estCeTrie) {
       for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
       AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
       for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
+    }
+  }*/
+  IngredientsJSON.length = 0
+  AppareilsJSON.length = 0
+  UstensilesJSON.length = 0
+  // On récupère les recettes affichées
+  let mesRecettes = new DOMParser().parseFromString(document.getElementById('affichageRecettes').innerHTML, 'text/html').querySelectorAll('.divRecette')
+  for (const maRecette of mesRecettes) {
+    // Nous allons retrouver la recette par son nom
+    let nomRecette = maRecette.getElementsByTagName('h5')[0].innerHTML
+    for (const recetteConsideree of Recettes) {
+      if (recetteConsideree.name === nomRecette) {
+        for(const list of recetteConsideree.ingredients){IngredientsJSON.push(list.ingredient)}
+        AppareilsJSON.push(recetteConsideree.appliance) // Il n'y a qu'un seul appareil par recette
+        for(const list of recetteConsideree.ustensils){UstensilesJSON.push(list.ustensil)}
+        break
+      }
     }
   }
   // On élimline les ingrédients qui sont dans les filtres
@@ -107,7 +123,7 @@ const chargeRecettes = async () => {
     });
     Recettes.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
     afficheRecettes(false)
-    genereListesCriteres(false)
+    genereListesCriteres()
     htmlToutesRecettes = document.getElementById('affichageRecettes').innerHTML // On sauvegarde le html de toutes les recettes, et des menus dropdown
     htmlTousIngredients = document.getElementById('listeIngredients').innerHTML
     htmlTousAppareils = document.getElementById('listeAppareils').innerHTML
@@ -135,6 +151,7 @@ function trieAvecFiltres(htmlRecettes) {
   RecettesFiltrees.length = 0
   for (const monFiltre of mesFiltres) {
     const monCritere = monFiltre.innerHTML.substring(0, monFiltre.innerHTML.indexOf('<button>')).replace(/(\r\n|\n|\r)/gm, '').replace(/^\s+/g, '').replace(/\s+$/g, '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    //console.log('monCritere : ' + monCritere)
     if (htmlInjecte !== '') { mesRecettes = new DOMParser().parseFromString(htmlInjecte, 'text/html').querySelectorAll('.divRecette')}
     htmlInjecte = ''
     for (const maRecette of mesRecettes) {
@@ -196,6 +213,7 @@ function trieAvecFiltres(htmlRecettes) {
       }
     }
   }
+  //console.log('htmlInjecte : ' + htmlInjecte)
   return htmlInjecte
 }
 
@@ -210,7 +228,7 @@ function ajouteCritere(event) {
       </span>
   `
   let htmlInjecte = trieAvecFiltres(document.getElementById('affichageRecettes').innerHTML) // Maintenant, filtrons les recettes à partir de ce qui a été ajouté
-  genereListesCriteres(true) // Générons les critères mis à jour
+  genereListesCriteres() // Générons les critères mis à jour
   if (htmlInjecte !== '') { // Et affichons le html généré des recettes filtrées
     document.getElementById('affichageRecettes').innerHTML = htmlInjecte
   } else {
@@ -224,13 +242,25 @@ function ajouteCritere(event) {
 
 function retireCritere(event) {
   //event.target.parentNode.parentNode.parentNode.remove()
-  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode)
-  let htmlAInjecter = trieAvecFiltres(htmlToutesRecettes)
-  if (htmlAInjecter !== '') {
-    document.getElementById('affichageRecettes').innerHTML = htmlAInjecter
-  } else {
-    filtrerRecettes()
+  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode) // On supprime le critère
+  // Maintenant, il faut mettre à jour les recettes affichées
+  if (maRecherche.value.length > 2) { // A-t-on entré un critère via la barre de recherche ?
+    console.log('on filtre en fonction de la searchbar')
+    filtrerRecettes() // Oui : on affiche les recettes concernées par ce critère
+    // Puis, s'il reste des critères ajoutés via les menus, on trie encore, avec les filtres encore affichés
+    if (document.getElementById('criteres').innerHTML.indexOf('span') !== -1) {
+      document.getElementById('affichageRecettes').innerHTML = trieAvecFiltres(document.getElementById('affichageRecettes').innerHTML)
+    }
+  } else { // Non : on affiche toutes les recettes, en les filtrant via les filtres encore affichés
+    if (document.getElementById('criteres').innerHTML.indexOf('span') !== -1) {
+      document.getElementById('affichageRecettes').innerHTML = trieAvecFiltres(htmlToutesRecettes)
+    } else {
+      document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
+    }
   }
+  if (document.getElementById('criteres').innerHTML.indexOf('span') === -1) {document.getElementById('criteres').innerHTML = '' } 
+  // On met à jour la liste des filtres
+  genereListesCriteres()
 }
 
 document.addEventListener('click', (event) => {
@@ -279,28 +309,29 @@ function filtrerRecettes() {
       for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
       AppareilsJSON.push(maRecette.appliance)
       for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
-      genereListesCriteres(true)
+      //genereListesCriteres(true)
     }
   }
   // On affiche les recettes
   RecettesFiltrees.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
   afficheRecettes(true)
+  genereListesCriteres()
 }
 
 function restaureRecettes() {
-  const conteneurCriteres = document.getElementById('criteres')
-  if (conteneurCriteres.innerHTML === '') { // Il n'y a pas de critères actifs
+  if (document.getElementById('criteres').innerHTML.indexOf('span') < 1) { // Il n'y a pas de critères actifs
     document.getElementById('affichageRecettes').innerHTML = htmlToutesRecettes
   } else { // Il y a des critères actifs : 
-    trieAvecFiltres(htmlToutesRecettes)
+    document.getElementById('affichageRecettes').innerHTML = trieAvecFiltres(htmlToutesRecettes)
   }
 }
 
 maRecherche.addEventListener('keyup', (event) => {
-  if (maRecherche.value.length > 2) {filtrerRecettes()}
+  if (maRecherche.value.length > 2) {
+    filtrerRecettes()}
   else {
     restaureRecettes()
-    genereListesCriteres(false)
+    genereListesCriteres()
   }
 })
 
