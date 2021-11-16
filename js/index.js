@@ -35,19 +35,6 @@ function retireEntreeTableau(tableau, valeur) {
 }
 
 function genereListesCriteres() {
-  /*if (estCeTrie === true) { // doit-on générer les listes depuis le tableau des recettes filtrées ?
-    for (const maRecette of RecettesFiltrees) {
-      for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
-      AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
-      for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
-    }
-  } else { // ... ou bien depuis celui des recettes non filtrées ?
-    for (const maRecette of Recettes) {
-      for(const list of maRecette.ingredients){IngredientsJSON.push(list.ingredient)}
-      AppareilsJSON.push(maRecette.appliance) // Il n'y a qu'un seul appareil par recette
-      for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
-    }
-  }*/
   IngredientsJSON.length = 0
   AppareilsJSON.length = 0
   UstensilesJSON.length = 0
@@ -93,21 +80,35 @@ function genereListesCriteres() {
   // On peut maintenant peupler les listes déroulantes
   const affichageIngredients = document.getElementById('listeIngredients')
   affichageIngredients.innerHTML = ''
-  IngredientsJSON.forEach((element) => {
-    affichageIngredients.innerHTML += `<li class="filtre filtreIngredient">${element}</li>`;
-  })
+  if (IngredientsJSON.length > 0) {
+    affichageIngredients.style.display = 'grid'
+    IngredientsJSON.forEach((element) => {affichageIngredients.innerHTML += `<li class="filtre filtreIngredient">${element}</li>`})
+  } else {
+    affichageIngredients.style.display = 'block'
+    affichageIngredients.innerHTML = 'Il n\'y a pas d\'ingrédients disponibles'
+  }
 
   const affichageAppareils = document.getElementById('listeAppareils')
   affichageAppareils.innerHTML = ''
-  AppareilsJSON.forEach((element) => {
-    affichageAppareils.innerHTML += `<li class="filtre filtreAppareil">${element}</li>`;
-  })
+  if (AppareilsJSON.length > 0) {
+    affichageAppareils.style.display = 'grid'
+    AppareilsJSON.forEach((element) => {affichageAppareils.innerHTML += `<li class="filtre filtreAppareil">${element}</li>`})
+  } else {
+    affichageAppareils.style.display = 'block'
+    affichageAppareils.innerHTML = 'Il n\'y a pas d\'appareils disponibles'
+  }
+  
 
   const affichageUstensiles = document.getElementById('listeUstensiles')
   affichageUstensiles.innerHTML = ''
-  UstensilesJSON.forEach((element) => {
-    affichageUstensiles.innerHTML += `<li class="filtre filtreUstensile">${element}</li>`;
-  })
+  if (UstensilesJSON.length > 0) {
+    affichageUstensiles.style.display = 'grid'
+    UstensilesJSON.forEach((element) => {affichageUstensiles.innerHTML += `<li class="filtre filtreUstensile">${element}</li>`})
+  } else {
+    affichageUstensiles.style.display = 'block'
+    affichageUstensiles.innerHTML = 'Il n\'y a pas d\'ustensiles disponibles'
+  }
+  
 }
 
 const chargeRecettes = async () => {
@@ -151,7 +152,7 @@ function trieAvecFiltres(htmlRecettes) {
   RecettesFiltrees.length = 0
   for (const monFiltre of mesFiltres) {
     const monCritere = monFiltre.innerHTML.substring(0, monFiltre.innerHTML.indexOf('<button>')).replace(/(\r\n|\n|\r)/gm, '').replace(/^\s+/g, '').replace(/\s+$/g, '').toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-    //console.log('monCritere : ' + monCritere)
+    console.log('monCritere : >' + monCritere + '<')
     if (htmlInjecte !== '') { mesRecettes = new DOMParser().parseFromString(htmlInjecte, 'text/html').querySelectorAll('.divRecette')}
     htmlInjecte = ''
     for (const maRecette of mesRecettes) {
@@ -213,39 +214,11 @@ function trieAvecFiltres(htmlRecettes) {
       }
     }
   }
-  //console.log('htmlInjecte : ' + htmlInjecte)
   return htmlInjecte
 }
 
-function ajouteCritere(event) {
-  document.getElementById('criteres').innerHTML += `
-      <span class="critere critere-${event.target.className.split(' ').pop()}">
-        ${event.target.innerHTML}<button>
-          <svg class="retireCritere" alt="supprimer ce filtre" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12.59 6L10 8.59L7.41 6L6 7.41L8.59 10L6 12.59L7.41 14L10 11.41L12.59 14L14 12.59L11.41 10L14 7.41L12.59 6ZM10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z" fill="white"/>
-          </svg>
-          </button>
-      </span>
-  `
-  let htmlInjecte = trieAvecFiltres(document.getElementById('affichageRecettes').innerHTML) // Maintenant, filtrons les recettes à partir de ce qui a été ajouté
-  genereListesCriteres() // Générons les critères mis à jour
-  if (htmlInjecte !== '') { // Et affichons le html généré des recettes filtrées
-    document.getElementById('affichageRecettes').innerHTML = htmlInjecte
-  } else {
-    document.getElementById('affichageRecettes').innerHTML = `
-      <div class="alert alert-primary card" role="alert">
-        Aucune recette ne correspond à ces critères !
-      </div>
-    `
-  }
-}
-
-function retireCritere(event) {
-  //event.target.parentNode.parentNode.parentNode.remove()
-  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode) // On supprime le critère
-  // Maintenant, il faut mettre à jour les recettes affichées
+function metAJourRecettes() {
   if (maRecherche.value.length > 2) { // A-t-on entré un critère via la barre de recherche ?
-    console.log('on filtre en fonction de la searchbar')
     filtrerRecettes() // Oui : on affiche les recettes concernées par ce critère
     // Puis, s'il reste des critères ajoutés via les menus, on trie encore, avec les filtres encore affichés
     if (document.getElementById('criteres').innerHTML.indexOf('span') !== -1) {
@@ -261,6 +234,26 @@ function retireCritere(event) {
   if (document.getElementById('criteres').innerHTML.indexOf('span') === -1) {document.getElementById('criteres').innerHTML = '' } 
   // On met à jour la liste des filtres
   genereListesCriteres()
+}
+
+function ajouteCritere(event) {
+  document.getElementById('criteres').innerHTML += `
+      <span class="critere critere-${event.target.className.split(' ').pop()}">
+        ${event.target.innerHTML}<button>
+          <svg class="retireCritere" alt="supprimer ce filtre" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12.59 6L10 8.59L7.41 6L6 7.41L8.59 10L6 12.59L7.41 14L10 11.41L12.59 14L14 12.59L11.41 10L14 7.41L12.59 6ZM10 0C4.47 0 0 4.47 0 10C0 15.53 4.47 20 10 20C15.53 20 20 15.53 20 10C20 4.47 15.53 0 10 0ZM10 18C5.59 18 2 14.41 2 10C2 5.59 5.59 2 10 2C14.41 2 18 5.59 18 10C18 14.41 14.41 18 10 18Z" fill="white"/>
+          </svg>
+          </button>
+      </span>
+  `
+  metAJourRecettes()
+}
+
+function retireCritere(event) {
+  //event.target.parentNode.parentNode.parentNode.remove()
+  event.target.parentNode.parentNode.parentNode.removeChild(event.target.parentNode.parentNode) // On supprime le critère
+  // Maintenant, il faut mettre à jour les recettes affichées
+  metAJourRecettes()
 }
 
 document.addEventListener('click', (event) => {
@@ -327,8 +320,7 @@ function restaureRecettes() {
 }
 
 maRecherche.addEventListener('keyup', (event) => {
-  if (maRecherche.value.length > 2) {
-    filtrerRecettes()}
+  if (maRecherche.value.length > 2) {metAJourRecettes()}
   else {
     restaureRecettes()
     genereListesCriteres()
