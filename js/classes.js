@@ -1,3 +1,16 @@
+/*
+    classes.js
+
+    Définit les classes Recette, Ustensile et Ingrédient
+
+    La classe Recette possède la classe genereCarteRecette, qui génère le
+    code HTML pour chaque carte de recette. La classe Recette stocke d'ailleurs
+    ce code au sein de sa propriété "html", afin d'accélerer les ré-affichages.
+
+    La classe Ingrédient génère quant à elle le html des spans des ingrédients
+    au sein du dropDown Ingrédients, via sa méthode génèreIngrédient.
+*/
+
 class Ingredient {
     genereIngredient() {
         if(this.quantity === undefined && this.unit === undefined ){
