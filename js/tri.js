@@ -153,7 +153,7 @@ export function trieAvecFiltres(htmlRecettes) {
     IngredientsJSON.length = 0
     AppareilsJSON.length = 0
     UstensilesJSON.length = 0
-    for (const maRecette of Recettes) {
+    Recettes.forEach(maRecette => {
       let recetteTrouvee = false
       if (chaineContientChaine(maRecette.description, maRecherche.value) // dans la description ?
         || chaineContientChaine(maRecette.name, maRecherche.value) // ou le nom de la recette ?
@@ -182,7 +182,7 @@ export function trieAvecFiltres(htmlRecettes) {
         for(const list of maRecette.ustensils){UstensilesJSON.push(list.ustensil)}
         //genereListesCriteres(true)
       }
-    }
+    })
     // On affiche les recettes
     RecettesFiltrees.sort(function (a, b) {return a.name.localeCompare(b.name)}) // On trie le tableau par ordre alphabétique du nom des recettes
     afficheRecettes(true)

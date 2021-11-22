@@ -1724,11 +1724,11 @@
     },
     {
         "id": 51,
-        "name": "Omelette au Nesquik",
+        "name": "Omelette au Benco",
         "servings": 2,
         "ingredients": [
             {
-                "ingredient": "Nesquik",
+                "ingredient": "Benco",
                 "quantity": 1,
                 "unit":"Cuillère à soupe"
             },
@@ -1753,7 +1753,7 @@
             }
         ],
         "time": 20,
-        "description":"Battez les oeufs entiers avec le Sucre en poudre, le sucre vanillé, le lait et le Nesquik dans un bol, jusqu’à obtenir une crème bien lisse et sans grumeaux. Faites fondre une noisette de beurre dans une poêle. Quand le beurre est bien fondu, versez la préparation au chocolat et aux oeufs battus dans la poêle et laissez cuire pendant environ 10 minutes, jusqu'à obtenir une omelette bien baveuse ou ferme, selon vos goûts. Quand l’omelette au Nesquik est cuite selon vos goûts, retirez la poêle du feu et versez l’omelette dans une assiette à dessert. Parsemez l’omelette au Nesquik d’un peu de vermicelle au chocolat et de noisettes de crème chantilly. Dégustez aussitôt.",
+        "description":"Battez les oeufs entiers avec le Sucre en poudre, le sucre vanillé, le lait et le Benco dans un bol, jusqu’à obtenir une crème bien lisse et sans grumeaux. Faites fondre une noisette de beurre dans une poêle. Quand le beurre est bien fondu, versez la préparation au chocolat et aux oeufs battus dans la poêle et laissez cuire pendant environ 10 minutes, jusqu'à obtenir une omelette bien baveuse ou ferme, selon vos goûts. Quand l’omelette au Benco est cuite selon vos goûts, retirez la poêle du feu et versez l’omelette dans une assiette à dessert. Parsemez l’omelette au Benco d’un peu de vermicelle au chocolat et de noisettes de crème chantilly. Dégustez aussitôt.",
         "appliance": "Four",
         "ustensils":["rouleau à patisserie","fouet"]
     }
